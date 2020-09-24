@@ -30,7 +30,7 @@ namespace Lab4
 
             for (int i = 0; i < 10000; i++)
             {
-                SkipList.GetValue(i);
+                SkipList.ContainsKey(i);
             }
 
             var resultTime = startTime.Elapsed;

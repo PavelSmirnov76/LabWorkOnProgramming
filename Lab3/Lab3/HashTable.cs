@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Lab3
 {
-    class HashTable<TKey, TValue>
-    {
+    public class HashTable<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+    { 
         public int Length { set; get; }
         private int _size { set; get; }
+
+        
 
         private Node<TKey, TValue>[] _items = null;
 
@@ -25,7 +28,7 @@ namespace Lab3
         {
             int x = GetHash1(Key);
             int y = GetHash2(Key);
-            if (Length == _size)
+            if (_size- Length <= 0.1*_size)
                 Resize();
             for (int i = 0; i < _size; i++)
             {
@@ -33,28 +36,56 @@ namespace Lab3
                 {
                     _deleted[x] = false;
                     _items[x] = new Node<TKey, TValue>(Key, Value);
+                    Length++;
                     return;
                 }
                 x = (x + y) % _size;
             }
         }
-        public TValue Search(TKey Key)
+        public bool ContainsKey(TKey key)
         {
-            int x = GetHash1(Key);
-            int y = GetHash2(Key);
+            if (GetIndex(key) >= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool GetValue(TKey key, out TValue value)
+        {
+            int index = GetIndex(key);
+            if (index >= 0)
+            {
+                value = _items[index].Value;
+                return true;
+            }
+            else
+            {
+                value = default(TValue);
+                return false;
+            }
+        }
+        private int GetIndex(TKey key)
+        {
+            int x = GetHash1(key);
+            int y = GetHash2(key);
             for (int i = 0; i < _size; i++)
             {
                 if (_items[x] != null)
-                    if (_items[x].Key.ToString() == Key.ToString() && !_deleted[x])
+                {
+                    if (_items[x].Key.ToString() == key.ToString() && !_deleted[x])
                     {
-                        return _items[x].Value;
+                        return x;
                     }
-                    else
-                        return default(TValue);
+                }
+                else
+                    return -1;
                 x = (x + y) % _size;
 
             }
-            return default(TValue);
+            return 0;
         }
         public void Remove(TKey Key)
         {
@@ -63,15 +94,18 @@ namespace Lab3
             for (int i = 0; i < _size; i++)
             {
                 if (_items[x] != null)
+                {
                     if (_items[x].Key.ToString() == Key.ToString())
+                    {
                         _deleted[x] = true;
-                    else;
+                        Length--;
+                    }
+                }
                 else
                     return;
                 x = (x + y) % _size;
             }
         }
-
         private void Resize()
         {
             this._size = _size * 2;
@@ -80,14 +114,39 @@ namespace Lab3
         }
         private int GetHash1(TKey Key)
         {
-            int Hash = Convert.ToInt32(Key);
 
-            return Hash % _size;
+            return Math.Abs(Key.GetHashCode()) % _size;
         }
         private int GetHash2(TKey Key)
         {
-            int Hash = Convert.ToInt32(Key);
-            return 1 + Hash % (_size - 2);
+            return 1 + Math.Abs(Key.GetHashCode()) % (_size - 2);
+        }
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            for(int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] != null)
+                {
+                    yield return new KeyValuePair<TKey, TValue>(_items[i].Key, _items[i].Value);
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public TValue this[TKey key]
+        {
+            get
+            {
+                return _items[GetIndex(key)].Value;
+            }
+            set
+            {
+                _items[GetIndex(key)].Value = value;
+            }
         }
     }
 }

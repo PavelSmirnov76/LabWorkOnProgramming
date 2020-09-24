@@ -6,32 +6,33 @@ namespace Lab2
     {
         static void Main(string[] args)
         {
-            AVLTree<int, int> Tree = new AVLTree<int, int>();
-
-            var startTime = System.Diagnostics.Stopwatch.StartNew();
+            var tree = new BinaryTree<int, int>();
 
             int[] Mas = new int[10000];
             for (int i = 0; i < 10000; i++)
             {
                 Random rnd = new Random();
-                Mas[i] = rnd.Next(0,10000);
+                Mas[i] = rnd.Next(0, 10000);
             }
+            var startTime = System.Diagnostics.Stopwatch.StartNew();
 
             for (int i = 0; i < 10000; i++)
             {
-                Tree.Add(i, Mas[i]);
+                tree.Add(i, Mas[i]);
             }
-          
-            for (int i = 5000; i < 7000; i++)
+
+            for (int i = 500; i < 700; i++)
             {
-                Tree.Delete(i);
+                tree.Delete(i);
             }
-            
-            for (int i = 0; i < 10000; i++)
+
+            int value = 0;
+
+            for (int i = 700; i < 1000; i++)
             {
-                Tree.GetValue(i);
+                tree.TryGetValue(i);
             }
-            
+
             var resultTime = startTime.Elapsed;
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:000}",
                 resultTime.Hours,
@@ -55,7 +56,7 @@ namespace Lab2
             {
                 Dict.Remove(i);
             }
-            int value = 0;
+            value = 0;
             for (int i = 0; i < 10000; i++)
             {
                 Dict.TryGetValue(i, out value);
@@ -70,6 +71,7 @@ namespace Lab2
                 resultDictTime.Milliseconds);
 
             Console.WriteLine("Время работы SortedDictionary {0}", elapsedDictTime);
+
 
         }
     }

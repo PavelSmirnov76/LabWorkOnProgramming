@@ -6,59 +6,62 @@ using System.Text;
 
 namespace Lab2
 {
-    class AVLTree<TKey, TValue> : IEnumerable<Node<TKey, TValue>> where TKey : IComparable<TKey>
+    public class AVLTree<TKey, TValue> : IEnumerable<Node<TKey, TValue>> where TKey : IComparable<TKey>
     {
-        public int Height { set; get; }
+        public int Count { set; get; }
         private Node<TKey, TValue> Head { set; get; }
 
 
         public AVLTree()
         {
-            Height = 0;
+            Count = 0;
             
         }
 
 
         public void Add(TKey Key, TValue value)
         {
+            Count++;
             if (Head == null)
             {
                 Head = new Node<TKey, TValue>(Key, value);
-                return;
             }
-            Node<TKey, TValue> SubTree = Head;
-            while (SubTree != null)
-            {
-                if (SubTree.Key.CompareTo(Key) == -1)
+            else 
+            { 
+                Node<TKey, TValue> SubTree = Head;
+                while (SubTree != null)
                 {
-                    if (SubTree.Right == null)
+                    if (SubTree.Key.CompareTo(Key) == -1)
                     {
-                        SubTree.Right = new Node<TKey, TValue>(Key, value, SubTree);
-                        ChangeBalanceTreeAdd(SubTree, -1);
-                        break;
+                        if (SubTree.Right == null)
+                        {
+                            SubTree.Right = new Node<TKey, TValue>(Key, value, SubTree);
+                            ChangeBalanceTreeAdd(SubTree, -1);
+                            break;
+                        }
+                        else
+                        {
+                            SubTree = SubTree.Right;
+                        }
+                    }
+                    else if (SubTree.Key.CompareTo(Key) == 1)
+                    {
+                        if (SubTree.Left == null)
+                        {
+                            SubTree.Left = new Node<TKey, TValue>(Key, value, SubTree);
+                            ChangeBalanceTreeAdd(SubTree, 1);
+                            break;
+                        }
+                        else
+                        {
+                            SubTree = SubTree.Left;
+                        }
                     }
                     else
                     {
-                        SubTree = SubTree.Right;
-                    }
-                }
-                else if (SubTree.Key.CompareTo(Key) == 1)
-                {
-                    if (SubTree.Left == null)
-                    {
-                        SubTree.Left = new Node<TKey, TValue>(Key, value, SubTree);
-                        ChangeBalanceTreeAdd(SubTree, 1);
+                        SubTree.Value = value;
                         break;
                     }
-                    else
-                    {
-                        SubTree = SubTree.Left;
-                    }
-                }
-                else
-                {
-                    SubTree.Value = value;
-                    break;
                 }
 
             }
@@ -267,8 +270,9 @@ namespace Lab2
 
 
         // Удаление ....................................................................
-        public void Delete(TKey key)
+        public bool Delete(TKey key)
         {
+
             Node<TKey, TValue> Current = this.Head;
             while (Current != null)
             {
@@ -284,6 +288,7 @@ namespace Lab2
                 {
                     if (Current.Left == null && Current.Right == null)
                     {
+                        Count--;
                         if (Current == Head)
                         {
                             Head = null;
@@ -298,6 +303,7 @@ namespace Lab2
                             Current.Parent.Left = null;
                             ChangeBalanceTreeDelete(Current.Parent, -1);
                         }
+                        return true;
                     }
                     else if (Current.Left != null)
                     {
@@ -309,6 +315,7 @@ namespace Lab2
 
                         ReplaceNodes(Current, RightMost);
                         ChangeBalanceTreeDelete(RightMost.Parent, 1);
+                        return true;
                     }
                     else
                     {
@@ -320,15 +327,20 @@ namespace Lab2
 
                         ReplaceNodes(Current, leftMost);
                         ChangeBalanceTreeDelete(leftMost.Parent, -1);
+                        return true;
                     }
-                    break;
+                    //break;
                 }
+                
             }
+            return false;
+
         }
         private void ReplaceNodes(Node<TKey, TValue> sourceNode, Node<TKey, TValue> subtreeNode)
         {
             sourceNode.Key = subtreeNode.Key;
             sourceNode.Value = subtreeNode.Value;
+            sourceNode.Balance = subtreeNode.Balance; //?????
 
             if (subtreeNode.Parent != null)
             {
@@ -431,7 +443,33 @@ namespace Lab2
         }
 
         // поиск ................
-        public TValue GetValue(TKey key)
+        public bool GetValue(TKey key, out TValue value)
+        {
+            Node<TKey, TValue> Current = Search(key);
+            if (Current != null)
+            {
+                value = Current.Value;
+                return true;
+            }
+            else
+            {
+                value = default(TValue);
+                return false;
+            }
+        }
+        public bool ConteinsKey(TKey key)
+        {
+            Node<TKey, TValue> Current = Search(key);
+            if(Current != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        private Node<TKey, TValue> Search(TKey key)
         {
             Node<TKey, TValue> Current = Head;
             while (Current != null)
@@ -446,17 +484,13 @@ namespace Lab2
                 }
                 else
                 {
-                    return Current.Value;
+                    return Current;
                 }
             }
-            return default(TValue);
+            return null;
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-        public IEnumerator<Node<TKey, TValue>> GetEnumerator()
+        IEnumerator<Node<TKey, TValue>> IEnumerable<Node<TKey, TValue>>.GetEnumerator()
         {
             Queue<Node<TKey, TValue>> queue = new Queue<Node<TKey, TValue>>();
             queue.Enqueue(Head);
@@ -477,6 +511,12 @@ namespace Lab2
 
                 yield return tmp;
             }
+        }
+
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

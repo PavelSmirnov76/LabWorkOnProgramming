@@ -17,7 +17,8 @@ namespace Lab3
         }
         public override string ToString()
         {
-            return Key.ToString();
+            return $"{Key.ToString()} - {Value.ToString()}";
         }
+       
     }
 }

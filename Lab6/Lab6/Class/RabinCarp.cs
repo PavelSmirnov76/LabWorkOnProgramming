@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Lab6
 {
-    class RabinCarp: IStringSearchingAlgorithm
+    public class RabinCarp: IStringSearchingAlgorithm
     { 
         public List<int> StringSearching(int[] needle, int[] haystack) // P == needle
         {

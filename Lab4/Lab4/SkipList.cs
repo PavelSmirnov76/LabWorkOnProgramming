@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Resources;
-using System.Text;
 
 namespace Lab4
 {
@@ -71,7 +69,7 @@ namespace Lab4
             }
             Node<TKey, TValue> Node = new Node<TKey, TValue>(Key, Value, Prev[0].Next);
             Prev[0].Next = Node;
-            for (int i = 1; i <= lvl; i++)//sssssssssssssssssssssssssssssssssssssssss
+            for (int i = 1; i <= lvl; i++)
             {
                 Node = new Node<TKey, TValue>(Key, Value, Prev[i].Next);
                 Prev[i].Next = Node;
@@ -113,14 +111,38 @@ namespace Lab4
             }
             return default(TValue);
         }
-        public TValue GetValue(TKey Key)
+        public bool GetValue(TKey Key, out TValue value)
         {
-            return Search(Key, false);
+
+            value = Search(Key, false);
+
+            if (value != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
+        public bool ContainsKey(TKey key)
+        {
+            if (Search(key, false) != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         public void Delete(TKey Key)
         {
             Search(Key, true);
         }
+
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             for (var node = _head[0].Next; node.Next != null; node = node.Next)

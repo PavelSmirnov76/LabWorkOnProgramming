@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Lab6
 {
-    class BruteForceAlgorithm : IStringSearchingAlgorithm
+    public class BruteForceAlgorithm : IStringSearchingAlgorithm
     {
         public List<int> StringSearching(string needle, string haystack)
         {
