@@ -7,36 +7,35 @@ using System.Text;
 namespace Lab3
 {
     public class HashTable<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
-    { 
-        public int Length { set; get; }
-        private int _size { set; get; }
-
-        
+    {
+        private int _size;      
 
         private Node<TKey, TValue>[] _items = null;
 
         private bool[] _deleted = null;
         public HashTable()
         {
-            Length = 0;
+            Count = 0;
             _size = 32;
             _items = new Node<TKey, TValue>[_size];
             _deleted = new bool[_size];
         }
 
-        public void Add(TKey Key, TValue Value)
+        public int Count { get; private set; }
+
+        public void Add(TKey key, TValue value)
         {
-            int x = GetHash1(Key);
-            int y = GetHash2(Key);
-            if (_size- Length <= 0.1*_size)
+            int x = GetHash1(key);
+            int y = GetHash2(key);
+            if (_size- Count <= 0.1*_size)
                 Resize();
             for (int i = 0; i < _size; i++)
             {
                 if (_items[x] == null || _deleted[x])
                 {
                     _deleted[x] = false;
-                    _items[x] = new Node<TKey, TValue>(Key, Value);
-                    Length++;
+                    _items[x] = new Node<TKey, TValue>(key, value);
+                    Count++;
                     return;
                 }
                 x = (x + y) % _size;
@@ -44,14 +43,7 @@ namespace Lab3
         }
         public bool ContainsKey(TKey key)
         {
-            if (GetIndex(key) >= 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return (GetIndex(key) >= 0);
         }
         public bool GetValue(TKey key, out TValue value)
         {
@@ -81,11 +73,13 @@ namespace Lab3
                     }
                 }
                 else
+                {
                     return -1;
+                }
                 x = (x + y) % _size;
 
             }
-            return 0;
+            return -1;
         }
         public void Remove(TKey Key)
         {
@@ -98,7 +92,7 @@ namespace Lab3
                     if (_items[x].Key.ToString() == Key.ToString())
                     {
                         _deleted[x] = true;
-                        Length--;
+                        Count--;
                     }
                 }
                 else

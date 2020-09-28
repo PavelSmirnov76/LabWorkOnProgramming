@@ -117,24 +117,35 @@ namespace Lab2
             }
             if (node.Right != null && node.Left != null)
             {
-                var curNode = node.Left;
-                while (curNode.Right != null)
+                var curNode = node.Right;
+                while (curNode.Left != null)
                 {
-                    curNode = curNode.Right;
+                    curNode = curNode.Left; 
                 }
-                curNode.Right = node.Right;
+
+                if (curNode.Right != null)
+                {
+                    curNode.Right.Parent = curNode.Parent; 
+
+                }
+                curNode.Parent.Left = curNode.Right;
+
+                node.Left.Parent = curNode;
                 node.Right.Parent = curNode;
 
-                node.Left.Parent = node.Parent;
                 if (route == -1)
                 {
-                    node.Parent.Left = node.Left;
+                    node.Parent.Left = curNode;
                 }
                 else
                 {
-                    node.Parent.Right = node.Left;
+                    node.Parent.Right = curNode;
                 }
+                curNode.Left = node.Left;
+                curNode.Right = node.Right;
+                curNode.Parent = node.Parent;
                 Count--;
+               
                 return;
             }
 
@@ -189,8 +200,8 @@ namespace Lab2
             if (node != null)
             {
                 way.Add(node);
-                RecCLR(node.Left, way); // обойти левое поддерево
-                RecCLR(node.Right, way); // обойти правое поддерево
+                RecCLR(node.Left, way);
+                RecCLR(node.Right, way); 
             }
         }
         public IEnumerator GetEnumerator()

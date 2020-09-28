@@ -19,7 +19,6 @@ namespace Lab6
                         goto outbreek;
                     }
                 }
-                //Console.WriteLine(i);
                 IndexOf.Add(i);
                 outbreek:;
 

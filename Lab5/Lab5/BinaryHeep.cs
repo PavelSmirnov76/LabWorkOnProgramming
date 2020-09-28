@@ -90,13 +90,5 @@ namespace Lab5
         {
             return Count == 0;
         }
-        //public static bool operator <(T x, T y)
-        //{
-        //    return x.CompareTo(y) < 0;
-        //}
-        //public static bool operator >(T x, T y)
-        //{
-        //    return x.CompareTo(y) > 0;
-        //}
     }
 }

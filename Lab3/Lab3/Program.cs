@@ -9,7 +9,7 @@ namespace Lab3
         static List<string> CheckWorkMyCollection(string[] MasWord)
         {
 
-            HashTable<string, int> HT = new Lab3.HashTable<string, int>();
+            var HT = new HashTable<string, int>();
 
             for(int i = 0; i < MasWord.Length;i++)
             {
@@ -17,7 +17,10 @@ namespace Lab3
                 {
                     HT.Add(MasWord[i], 1);
                 }
-                HT[MasWord[i]]++;
+                else
+                {
+                    HT[MasWord[i]]++;
+                }
                
             }
             List<string> word = new List<string>();

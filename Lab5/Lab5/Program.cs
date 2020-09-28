@@ -15,7 +15,6 @@ namespace Lab5
                 BH.Add(r);
                 Console.WriteLine(r);
             }
-            BH.Peek();
             BH.Pop();
             Console.WriteLine("Ответ");
             Console.WriteLine(BH.Peek());

@@ -57,19 +57,70 @@ namespace BinaryTree.Test
 
             Assert.ThrowsException<InvalidOperationException>(() => tree.TryGetValue(11));
         }
-        [TestMethod]
-        public void BinaryTreeDelete_Key3()
+
+        //                                               8                     Delete 3
+        //                                              / \                                           
+        //                                             3   10                                                      
+        //                                            / \    \                                                             
+        //                                           1   6    14                
+        //                                              / \   /                           
+        //                                             4   7  13     
+        //                                             \                                               
+        //                                              5
+        
+        //                                               8                        
+        //                                              / \                                           
+        //                                             4   10                                                      
+        //                                            / \    \                                                             
+        //                                           1   6    14                
+        //                                              / \   /                           
+        //                                             5   7  13     
+        [TestMethod]                                     
+        public void BinaryTreeDelete_Key3_NotFound()
         {
             var tree = new BinaryTree<int, int>();
 
-            tree.Add(7, 1);
-            tree.Add(4, 11);
-            tree.Add(3, 6);
-            tree.Add(8, 3);
+            tree.Add(8, 1);
+            tree.Add(3, 11);
+            tree.Add(10, 6);
+            tree.Add(1, 5);
+            tree.Add(6, 12);
+            tree.Add(14, 35);
+            tree.Add(4, 41);
+            tree.Add(5, 41);
+            tree.Add(7, 254);
+            tree.Add(13, 67);
 
             tree.Delete(3);
 
             Assert.ThrowsException<InvalidOperationException>(() => tree.TryGetValue(3));
+        }
+        [TestMethod]
+        public void BinaryTreeDelete_Key3_CheckDependencies()
+        {
+            var tree = new BinaryTree<int, int>();
+
+            tree.Add(8, 1);
+            tree.Add(3, 11);
+            tree.Add(10, 6);
+            tree.Add(1, 5);
+            tree.Add(6, 12);
+            tree.Add(14, 35);
+            tree.Add(4, 41);
+            tree.Add(5, 41);
+            tree.Add(7, 254);
+            tree.Add(13, 67);
+
+            tree.Delete(3);
+
+            var path = "";
+
+            foreach (var node in tree.Search())
+            {
+                path += node.Key;
+            }
+
+            Assert.AreEqual("841657101413", path);
         }
         [TestMethod]
         public void BinaryTreeDelete_Count3()

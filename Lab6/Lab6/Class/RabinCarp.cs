@@ -38,7 +38,6 @@ namespace Lab6
                         }
                     }
                     Console.WriteLine(s);
-                    //IndexOf.Add(i);
                 outbreek:;
                 }
                 if (s<n-m-1)

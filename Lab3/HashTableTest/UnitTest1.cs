@@ -82,7 +82,7 @@ namespace HashTableTest
             }
         
 
-            int ActualItem = HT.Length;
+            int ActualItem = HT.Count;
 
             int ExpetctedItem = 10;
 
