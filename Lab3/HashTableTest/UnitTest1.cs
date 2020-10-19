@@ -43,6 +43,7 @@ namespace HashTableTest
             for (int i = 1; i < 10; i += 2)
             {
                 Assert.AreEqual(true, HT.ContainsKey(i));
+                Assert.AreEqual(false, HT.ContainsKey(i - 1));
             }
         }
         [TestMethod]

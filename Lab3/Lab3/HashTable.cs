@@ -6,19 +6,16 @@ using System.Text;
 
 namespace Lab3
 {
-    public class HashTable<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+    public class HashTable<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>> where TKey:IComparable<TKey>
     {
         private int _size;      
 
         private Node<TKey, TValue>[] _items = null;
-
-        private bool[] _deleted = null;
         public HashTable()
         {
             Count = 0;
-            _size = 32;
+            _size = 10001;
             _items = new Node<TKey, TValue>[_size];
-            _deleted = new bool[_size];
         }
 
         public int Count { get; private set; }
@@ -27,19 +24,26 @@ namespace Lab3
         {
             int x = GetHash1(key);
             int y = GetHash2(key);
-            if (_size- Count <= 0.1*_size)
+            if (_size - Count <= 0.2*_size)
                 Resize();
             for (int i = 0; i < _size; i++)
             {
-                if (_items[x] == null || _deleted[x])
+                if (_items[x] == null)
                 {
-                    _deleted[x] = false;
                     _items[x] = new Node<TKey, TValue>(key, value);
                     Count++;
                     return;
                 }
+                if (_items[x].Key.CompareTo(key) == 0)
+                {
+                    return;
+                }
                 x = (x + y) % _size;
             }
+        }
+        public void Add(Node<TKey, TValue> node)
+        {
+            Add(node.Key, node.Value);
         }
         public bool ContainsKey(TKey key)
         {
@@ -63,20 +67,15 @@ namespace Lab3
         {
             int x = GetHash1(key);
             int y = GetHash2(key);
-            for (int i = 0; i < _size; i++)
+
+            while (_items[x] != null)
             {
-                if (_items[x] != null)
+                if (_items[x].Key.CompareTo(key) == 0)
                 {
-                    if (_items[x].Key.ToString() == key.ToString() && !_deleted[x])
-                    {
-                        return x;
-                    }
-                }
-                else
-                {
-                    return -1;
+                    return x;
                 }
                 x = (x + y) % _size;
+
 
             }
             return -1;
@@ -89,9 +88,9 @@ namespace Lab3
             {
                 if (_items[x] != null)
                 {
-                    if (_items[x].Key.ToString() == Key.ToString())
+                    if (_items[x].Key.CompareTo(Key) == 0)
                     {
-                        _deleted[x] = true;
+                        _items[x] = null;
                         Count--;
                     }
                 }
@@ -102,9 +101,19 @@ namespace Lab3
         }
         private void Resize()
         {
-            this._size = _size * 2;
-            Array.Resize(ref _items, _size);
-            Array.Resize(ref _deleted, _size);
+
+            var oldItems = _items;
+
+            _size *= 4;
+            _items = new Node<TKey, TValue>[_size];
+
+            for (int i = 0; i < oldItems.Length;i++)
+            {
+                if (oldItems[i] != null)
+                {
+                    Add(oldItems[i]);                   
+                }
+            } 
         }
         private int GetHash1(TKey Key)
         {
@@ -113,7 +122,7 @@ namespace Lab3
         }
         private int GetHash2(TKey Key)
         {
-            return 1 + Math.Abs(Key.GetHashCode()) % (_size - 2);
+            return 1 + Math.Abs(Key.GetHashCode()) % (_size - 1);
         }
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {

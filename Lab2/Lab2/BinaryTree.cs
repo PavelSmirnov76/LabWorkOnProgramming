@@ -71,6 +71,10 @@ namespace Lab2
         {
             var node = Head;
             var route = 0;
+            if (node == null)
+            {
+                return;
+            }
 
             while (!node.Key.Equals(key))
             {
@@ -83,6 +87,10 @@ namespace Lab2
                 {
                     node = node.Right;
                     route = 1;
+                }
+                if (node == null)
+                {
+                    return;
                 }
             }
 
@@ -117,17 +125,41 @@ namespace Lab2
             }
             if (node.Right != null && node.Left != null)
             {
+                var val = node.Left.Key;
+
                 var curNode = node.Right;
-                while (curNode.Left != null)
+                if (curNode.Left != null)
                 {
-                    curNode = curNode.Left; 
+                    while (curNode.Left != null)
+                    {
+                        curNode = curNode.Left;
+                    }
+
+                    if (curNode.Right != null)
+                    {
+                        curNode.Right.Parent = curNode.Parent;
+                        curNode.Parent.Left = curNode.Right;
+                    }
+                }
+                else 
+                {
+                    curNode.Left = node.Left;
+                    node.Left.Parent = curNode;
+
+                    if (route == -1)
+                    {
+                        node.Parent.Left = curNode;
+                    }
+                    else
+                    {
+                        node.Parent.Right = curNode;
+                    }
+                    curNode.Parent = node.Parent;
+                    Count--;
+
+                    return;
                 }
 
-                if (curNode.Right != null)
-                {
-                    curNode.Right.Parent = curNode.Parent; 
-
-                }
                 curNode.Parent.Left = curNode.Right;
 
                 node.Left.Parent = curNode;
@@ -181,7 +213,7 @@ namespace Lab2
                 }
                 if (node == null)
                 {
-                    throw new InvalidOperationException("key not found");
+                    return default;
                 }
             }
             

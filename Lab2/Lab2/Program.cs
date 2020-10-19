@@ -8,32 +8,39 @@ namespace Lab2
         {
             var tree = new BinaryTree<int, int>();
 
-            int[] Mas = new int[10000];
-            for (int i = 0; i < 10000; i++)
-            {
-                Random rnd = new Random();
-                Mas[i] = rnd.Next(0, 10000);
+            var mas = new HashSet<int>();
+
+            Random rnd = new Random();
+
+            while(mas.Count < 10000)
+            {               
+                mas.Add(rnd.Next(0, 30000));
             }
+
+            var M = new int[mas.Count];
+            mas.CopyTo(M);
+
             var startTime = System.Diagnostics.Stopwatch.StartNew();
 
-            for (int i = 0; i < 10000; i++)
-            {
-                tree.Add(i, Mas[i]);
+            foreach(var val in mas)
+            { 
+                tree.Add(val, 1);
             }
 
-            for (int i = 500; i < 700; i++)
+            for (int i = 5000; i < 7000; i++)
             {
-                tree.Delete(i);
+                tree.Delete(M[i]);
             }
 
             int value = 0;
-
-            for (int i = 700; i < 1000; i++)
+           
+            for (int i = 0; i < 10000; i++)
             {
-                tree.TryGetValue(i);
+                tree.TryGetValue(M[i]);
             }
-
+            startTime.Stop();
             var resultTime = startTime.Elapsed;
+            
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:000}",
                 resultTime.Hours,
                 resultTime.Minutes,
@@ -49,20 +56,21 @@ namespace Lab2
             var startDictTime = System.Diagnostics.Stopwatch.StartNew();
             for (int i = 0; i < 10000; i++)
             {
-                Dict.Add(i, Mas[i]);
+                Dict.Add(M[i], i);
 
             }
             for (int i = 5000; i < 7000; i++)
             {
-                Dict.Remove(i);
+                Dict.Remove(M[i]);
             }
             value = 0;
+
             for (int i = 0; i < 10000; i++)
             {
-                Dict.TryGetValue(i, out value);
+                Dict.TryGetValue(M[i], out value);
             }
 
-
+            startDictTime.Stop();
             var resultDictTime = startDictTime.Elapsed;
             string elapsedDictTime = String.Format("{0:00}:{1:00}:{2:00}.{3:000}",
                 resultDictTime.Hours,

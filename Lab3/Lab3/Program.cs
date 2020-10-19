@@ -13,14 +13,7 @@ namespace Lab3
 
             for(int i = 0; i < MasWord.Length;i++)
             {
-                if (!HT.ContainsKey(MasWord[i]))
-                {
-                    HT.Add(MasWord[i], 1);
-                }
-                else
-                {
-                    HT[MasWord[i]]++;
-                }
+                HT.Add(MasWord[i], 1);
                
             }
             List<string> word = new List<string>();
